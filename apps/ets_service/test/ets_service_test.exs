@@ -4,7 +4,9 @@ defmodule EtsServiceTest do
   alias EtsService.Schemas.Story
 
   setup do
-    data_service = start_supervised!(EtsService)
+    if is_nil(Process.whereis(EtsService)) do
+      start_supervised!(EtsService)
+    end
 
     story = %Story{
       by: "John Dee",
@@ -17,14 +19,15 @@ defmodule EtsServiceTest do
       url: "http://foo.bar/1/details"
     }
 
-    %{data_service: data_service, story: story}
+    %{story: story}
   end
 
   describe "insert_data/1" do
     test "inserts valid data into ETS", %{story: story} do
-      assert Enum.empty?(EtsService.find_data(story.id))
-      assert EtsService.insert_data(story) == :ok
-      assert Enum.member?(EtsService.find_data(story.id), story)
+      new_story = %{story | id: 2}
+
+      assert EtsService.insert_data(%{story | id: 2}) == :ok
+      assert Enum.member?(EtsService.find_data(2), new_story)
     end
 
     test "returns an error on invalid data" do
