@@ -2,6 +2,10 @@
 
 This is yet another [Hacker News](https://news.ycombinator.com/) aggregator. But this time built in Elixir, saving data into ETS and pooling data in batches from the [Hacker News API](https://github.com/HackerNews/API).
 
+You can reference the following diagram in order to understand how the application is built along with a brief explanation of each OTP app in it.
+
+![App diagram](app_diagram.png)
+
 ## Installation
 
 Clone the repository via `git clone https://github.com/er-jpg/hn-ag`.
