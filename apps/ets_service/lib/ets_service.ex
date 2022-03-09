@@ -41,16 +41,52 @@ defmodule EtsService do
     {:reply, result, name}
   end
 
+  @doc """
+  Inserts data into the stories table in the ETS.
+
+  Returns `:ok` or `{:error, :invalid_data}` when the parameter isn't a `%Story{}`.
+
+  ## Examples
+
+      iex> EtsService.insert_data(%EtsService.Schemas.Story{id: 1, title: "Foo bar"})
+      :ok
+
+  """
+  @spec insert_data(any) :: :ok | {:error, :invalid_data}
   def insert_data(%Story{id: key} = story) do
     GenServer.cast(__MODULE__, {:insert, {key, story}})
   end
 
   def insert_data(_data), do: {:error, :invalid_data}
 
+  @doc """
+  Searches data from the stories table in the ETS using the `key`.
+
+  Returns `[%EtsService.Schemas.Story{}]`.
+
+  ## Examples
+
+      iex> EtsService.find_data(1))
+      [%EtsService.Schemas.Story{id: 1, title: "Foo bar", ...}]
+
+  """
+  @spec find_data(any) :: list()
   def find_data(key) do
     GenServer.call(__MODULE__, {:find, key})
   end
 
+  @doc """
+  Deletes data from the stories table in the ETS using the `key`.
+
+  Returns `:ok`.
+
+  ## Examples
+
+      iex> EtsService.delete_data(1))
+      :ok
+
+  """
+  @spec delete_data(any) :: :ok
   def delete_data(key) do
     GenServer.cast(__MODULE__, {:delete, key})
   end
