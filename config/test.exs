@@ -13,3 +13,6 @@ config :http_service, HttpService.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "XuUohv15zwdtLX0SMpNuLlZqWUx+VWaP80PvSZdX/PnRp8naPfcZuH5P67sLhw89",
   server: false
+
+# Configures test caller for Hacker News External API
+config :hn_service, hn_api: HnService.HackerNewsApiBehaviourMock

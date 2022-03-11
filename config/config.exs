@@ -57,6 +57,9 @@ config :phoenix, :json_library, Jason
 # Use Hackney adapter for Tesla
 config :tesla, adapter: Tesla.Adapter.Hackney
 
+# Configures default caller for Hacker News External API
+config :hn_service, hn_api: HnService.HackerNewsApi
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
