@@ -11,7 +11,9 @@ defmodule HnService.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env()),
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -29,7 +31,11 @@ defmodule HnService.MixProject do
       {:ets_service, in_umbrella: true},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 end
