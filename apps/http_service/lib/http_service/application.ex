@@ -8,7 +8,8 @@ defmodule HttpService.Application do
     children = [
       HttpService.Telemetry,
       HttpService.Endpoint,
-      EtsService
+      EtsService,
+      {HnService.Worker, minutes: 5}
     ]
 
     opts = [strategy: :one_for_one, name: HttpService.Supervisor]

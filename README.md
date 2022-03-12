@@ -42,6 +42,11 @@ When checking test coverage you can just run `MIX_ENV=test mix coveralls -u`. Pl
 The lint of code is done via [credo](https://github.com/rrrene/credo) and in the root of repo just run `mix credo`.
 
 
+## TODO
+
+  * fix tests and implement mox to external api calls, currently when the worker starts the mox doesn't run and can't find the mock
+
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
