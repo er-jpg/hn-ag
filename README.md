@@ -30,6 +30,13 @@ Running the application via terminal use the following steps
  - Enter the app folder Ex.: `cd lib/apps/http_service`
  - Run the application with `iex` Ex.: `iex -S mix`
 
+
+### Endpoints
+
+Currently the `http_server` has the following endpoints:
+  - `[GET]/health` returns status 200
+  - `[GET]/api/stories&page=1` which returns a list of stories currently on memory 
+
 ## Testing and code quality
 
 ### Testing
@@ -44,7 +51,9 @@ The lint of code is done via [credo](https://github.com/rrrene/credo) and in the
 
 ## TODO
 
-  * fix tests and implement mox to external api calls, currently when the worker starts the mox doesn't run and can't find the mock
+  * ~~fix tests and implement mox to external api calls, currently when the worker starts the mox doesn't run and can't find the mock~~
+  * implement `select_count/3` for pagination inside the ETS, but it still requires learning how to match
+  * figure out how to test the list stories endpoint
 
 
 ## Contributing
