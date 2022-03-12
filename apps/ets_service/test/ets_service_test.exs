@@ -19,7 +19,9 @@ defmodule EtsServiceTest do
       url: "http://foo.bar/1/details"
     }
 
-    %{story: story}
+    table_name = :stories
+
+    %{story: story, table_name: table_name}
   end
 
   describe "insert_data/1" do
@@ -54,6 +56,27 @@ defmodule EtsServiceTest do
     test "deletes given element from ets", %{story: story} do
       assert EtsService.delete_data(story.id) == :ok
       refute Enum.member?(EtsService.find_data(story.id), story)
+    end
+  end
+
+  describe "list_data/0" do
+    test "returns full list of stories in the database", %{story: story} do
+      assert EtsService.insert_data(story) == :ok
+      assert Enum.member?(EtsService.list_data(), story)
+    end
+
+    test "returns an empty list if there's no itens in the ets", %{table_name: table_name} do
+      assert :ok = EtsService.clear_data()
+      assert EtsService.list_data() == []
+    end
+  end
+
+  describe "clear_data/0" do
+    test "fully cleans a table from the ets", %{story: story} do
+      assert EtsService.insert_data(story) == :ok
+      assert Enum.member?(EtsService.list_data(), story)
+      assert :ok = EtsService.clear_data()
+      assert EtsService.list_data() == []
     end
   end
 end

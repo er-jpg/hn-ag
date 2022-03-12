@@ -31,9 +31,25 @@ defmodule EtsService do
     {:noreply, name}
   end
 
+  def handle_cast(:clear, name) do
+    :ets.delete_all_objects(@table)
+
+    {:noreply, name}
+  end
+
   def handle_call({:find, key}, _from, name) do
     result =
       case :ets.lookup(name, key) do
+        [] -> []
+        list when is_list(list) -> Enum.map(list, fn {_key, value} -> value end)
+      end
+
+    {:reply, result, name}
+  end
+
+  def handle_call(:list, _from, name) do
+    result =
+      case :ets.tab2list(name) do
         [] -> []
         list when is_list(list) -> Enum.map(list, fn {_key, value} -> value end)
       end
@@ -89,5 +105,37 @@ defmodule EtsService do
   @spec delete_data(any) :: :ok
   def delete_data(key) do
     GenServer.cast(__MODULE__, {:delete, key})
+  end
+
+  @doc """
+  Lists all data from the stories table in the ETS.
+
+  Returns `[%EtsService.Schemas.Story{}]`.
+
+  ## Examples
+
+      iex> EtsService.list())
+      [%EtsService.Schemas.Story{id: 1, title: "Foo bar", ...}]
+
+  """
+  @spec list_data :: list()
+  def list_data do
+    GenServer.call(__MODULE__, :list)
+  end
+
+  @doc """
+  Fully clears data from the stories table in the ETS.
+
+  Returns `:ok`.
+
+  ## Examples
+
+      iex> EtsService.clear())
+      :ok
+
+  """
+  @spec clear_data :: :ok
+  def clear_data do
+    GenServer.cast(__MODULE__, :clear)
   end
 end
