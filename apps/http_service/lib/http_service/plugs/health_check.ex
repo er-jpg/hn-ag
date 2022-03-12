@@ -1,4 +1,7 @@
 defmodule HttpService.Plug.HealthCheck do
+  @moduledoc """
+  Plug for the `/health` endpoint. It was implemented as a Plug and not log the requests.
+  """
   import Plug.Conn
 
   def init(opts), do: opts

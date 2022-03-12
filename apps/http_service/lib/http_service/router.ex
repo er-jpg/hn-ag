@@ -7,5 +7,9 @@ defmodule HttpService.Router do
 
   scope "/api", HttpService do
     pipe_through :api
+
+    scope "/stories" do
+      get "/", StoryController, :list
+    end
   end
 end

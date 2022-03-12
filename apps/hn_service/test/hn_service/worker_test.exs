@@ -67,9 +67,5 @@ defmodule HnService.WorkerTest do
       assert_receive {:DOWN, ^ref, :process, _, :normal}, 500
       assert Enum.member?(EtsService.find_data(id), story)
     end
-
-    test "retries in case of error after the fetch_data", %{story_api: story_api, story: story} do
-      # TODO: Implement test for error
-    end
   end
 end
