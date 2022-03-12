@@ -33,7 +33,7 @@ Running the application via terminal use the following steps
 ## Testing and code quality
 
 ### Testing
-To run tests just run in the root folder of the repo `mix test`. Or you can run the command inside each application in the `apps` folder individually.
+To run tests just run in the root folder of the repo `mix test --no-start`. Or you can run the command inside each application in the `apps` folder individually.
 
 ### Test coverage
 When checking test coverage you can just run `MIX_ENV=test mix coveralls -u`. Plase note to use the `-u` flag when running from the root directory.

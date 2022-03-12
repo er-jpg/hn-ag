@@ -5,7 +5,7 @@ defmodule HnServiceTest do
 
   alias EtsService.Schemas.Story
 
-  setup :verify_on_exit!
+  setup [:set_mox_from_context, :verify_on_exit!]
 
   describe "fetch_story_data/1" do
     setup do
