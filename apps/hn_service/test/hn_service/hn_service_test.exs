@@ -5,7 +5,7 @@ defmodule HnServiceTest do
 
   alias EtsService.Schemas.Story
 
-  setup [:set_mox_from_context, :verify_on_exit!]
+  setup [:verify_on_exit!]
 
   describe "fetch_story_data/1" do
     setup do
@@ -17,6 +17,7 @@ defmodule HnServiceTest do
         "score" => 12,
         "time" => DateTime.to_unix(DateTime.utc_now()),
         "title" => "Foo bar",
+        "type" => "story",
         "url" => "http://foo.bar/1/details"
       }
 

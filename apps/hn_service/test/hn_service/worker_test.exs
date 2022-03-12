@@ -1,58 +1,75 @@
-# defmodule HnService.WorkerTest do
-#   use ExUnit.Case
+defmodule HnService.WorkerTest do
+  use ExUnit.Case
 
-#   import Mox
+  import Mox
 
-#   alias EtsService.Schemas.Story
+  alias EtsService.Schemas.Story
 
-#   setup [:set_mox_global, :verify_on_exit!]
+  setup [:set_mox_global, :verify_on_exit!]
 
-#   setup_all do
-#     if is_nil(Process.whereis(EtsService)) do
-#       start_supervised!(EtsService)
-#     end
+  setup do
+    id = 3
 
-#     if is_nil(Process.whereis(HnService.Worker)) do
-#       start_supervised!(HnService.Worker)
-#     end
+    story_api = %{
+      "by" => "John Dee",
+      "descendants" => 10,
+      "id" => id,
+      "kids" => 0,
+      "score" => 12,
+      "time" => DateTime.to_unix(DateTime.utc_now()),
+      "title" => "Foo bar",
+      "type" => "story",
+      "url" => "http://foo.bar/#{id}/details"
+    }
 
-#     id = 3
+    story = %Story{
+      by: "John Dee",
+      descendants: 10,
+      id: id,
+      kids: 0,
+      score: 12,
+      time: DateTime.to_unix(DateTime.utc_now()),
+      title: "Foo bar",
+      type: "story",
+      url: "http://foo.bar/#{id}/details"
+    }
 
-#     story = %Story{
-#       by: "Worker test",
-#       descendants: 100,
-#       id: id,
-#       kids: 20,
-#       score: 120,
-#       time: DateTime.to_unix(DateTime.utc_now()),
-#       title: "Worker test story",
-#       url: "http://foo.bar/#{id}/details"
-#     }
+    HnService.HackerNewsApiBehaviourMock
+    |> stub(:get_top_stories, fn ->
+      {:ok, [3]}
+    end)
+    |> stub(:get_story_details, fn _id ->
+      {:ok, story_api}
+    end)
 
-#     %{story: story, id: id}
-#   end
+    if is_nil(Process.whereis(EtsService)) do
+      start_supervised!(EtsService)
+    end
 
-#   describe "do_task_now!/0" do
-#     test "gets and adds data correctly to ETS from Hacker News API", %{story: story, id: id} do
-#       parent = self()
-#       ref = make_ref()
+    if is_nil(Process.whereis(HnService.Worker)) do
+      start_supervised!(HnService.Worker)
+    end
 
-#       HnService.HackerNewsApiBehaviourMock
-#       |> expect(:get_top_stories, 2, fn ->
-#         send(parent, {ref, :work})
+    %{story_api: story_api, story: story, id: id}
+  end
 
-#         {:ok, [3]}
-#       end)
-#       |> expect(:get_story_details, 0, fn _id ->
-#         send(parent, {ref, :work})
+  describe "do_task_now!/0" do
+    test "gets and adds data correctly to ETS from Hacker News API", %{
+      story_api: story_api,
+      story: story,
+      id: id
+    } do
+      HnService.Worker.do_task_now!()
 
-#         {:ok, [story]}
-#       end)
+      task = Task.async(fn -> HnService.Worker.do_task_now!() end)
+      ref = Process.monitor(task.pid)
 
-#       spawn(fn -> HnService.Worker.do_task_now!() end)
+      assert_receive {:DOWN, ^ref, :process, _, :normal}, 500
+      assert Enum.member?(EtsService.find_data(id), story)
+    end
 
-#       assert_receive {^ref, :work}
-#       assert Enum.member?(EtsService.find_data(story.id), story)
-#     end
-#   end
-# end
+    test "retries in case of error after the fetch_data", %{story_api: story_api, story: story} do
+      # TODO: Implement test for error
+    end
+  end
+end

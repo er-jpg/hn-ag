@@ -6,6 +6,8 @@ defmodule HnService.Worker do
   """
   use GenServer
 
+  require Logger
+
   @default_time_range 5
 
   def start_link(args) do
@@ -17,17 +19,35 @@ defmodule HnService.Worker do
     {:ok, state}
   end
 
-  def handle_info(:work, state) do
+  def handle_info(:fetch_data, state) do
     Keyword.get(state, :minutes, @default_time_range)
     |> schedule_work()
 
-    do_work()
+    result = HnService.fetch_story_data()
+    send(self(), {:save_data, result})
 
     {:noreply, state}
   end
 
+  def handle_info({:save_data, {:ok, stories}}, state) do
+    stories
+    |> Stream.map(fn e -> EtsService.insert_data(e) end)
+    |> Stream.run()
+
+    Logger.info("Upserted #{Enum.count(stories)} rows into the Ets.")
+
+    {:noreply, state}
+  end
+
+  def handle_info({:save_data, _}, state) do
+    Logger.warn("Couldn't fetch data from external API! Retrying...")
+
+    send(self(), :fetch_data)
+    {:noreply, state}
+  end
+
   def handle_call(:do_task_now, _from, state) do
-    do_work()
+    send(self(), :fetch_data)
     {:reply, :ok, state}
   end
 
@@ -39,13 +59,8 @@ defmodule HnService.Worker do
     GenServer.call(__MODULE__, :do_task_now)
   end
 
-  defp schedule_work(nil), do: send(self(), :work)
-  defp schedule_work(minutes), do: Process.send_after(self(), :work, :timer.minutes(minutes))
+  defp schedule_work(nil), do: send(self(), :fetch_data)
 
-  defp do_work() do
-    case HnService.fetch_story_data() do
-      {:ok, stories} -> Enum.each(stories, fn s -> EtsService.insert_data(s) end)
-      _ -> send(self(), :work)
-    end
-  end
+  defp schedule_work(minutes),
+    do: Process.send_after(self(), :fetch_data, :timer.minutes(minutes))
 end

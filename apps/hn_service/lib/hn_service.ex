@@ -21,12 +21,12 @@ defmodule HnService do
   def fetch_story_data(pool \\ @pool_amount) do
     with {:ok, story_list} <- hacker_news_api().get_top_stories(),
          top_pool_stories <- Stream.take(story_list, pool),
-         {:ok, detailed_list} <- aggregate_storyies_details(top_pool_stories) do
+         {:ok, detailed_list} <- aggregate_stories_details(top_pool_stories) do
       map_detailed_list(detailed_list)
     end
   end
 
-  defp aggregate_storyies_details(top_pool_stories) do
+  defp aggregate_stories_details(top_pool_stories) do
     top_pool_stories
     |> Task.async_stream(fn story_id ->
       hacker_news_api().get_story_details(story_id)
@@ -49,16 +49,18 @@ defmodule HnService do
     {:ok,
      list
      |> Stream.map(fn e ->
+       atom_map = Map.new(e, fn {k, v} -> {String.to_atom(k), v} end)
+
        %Story{
-         by: e["by"],
-         descendants: e["descendants"],
-         id: e["id"],
-         kids: e["kids"],
-         score: e["score"],
-         time: e["time"],
-         title: e["title"],
-         type: e["type"],
-         url: e["url"]
+         by: Map.get(atom_map, :by),
+         descendants: Map.get(atom_map, :descendants),
+         id: atom_map.id,
+         kids: Map.get(atom_map, :kids),
+         score: Map.get(atom_map, :score),
+         time: Map.get(atom_map, :time),
+         title: Map.get(atom_map, :title),
+         type: Map.get(atom_map, :type),
+         url: Map.get(atom_map, :url)
        }
      end)}
   end
