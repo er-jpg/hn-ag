@@ -6,6 +6,7 @@ defmodule HttpService.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      {Phoenix.PubSub, name: HttpService.PubSub},
       HttpService.Telemetry,
       HttpService.Endpoint,
       EtsService,
