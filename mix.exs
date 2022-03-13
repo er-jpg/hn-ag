@@ -8,7 +8,8 @@ defmodule HnAg.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      releases: releases()
+      releases: releases(),
+      xref: [exclude: [Phoenix.PubSub]]
     ]
   end
 

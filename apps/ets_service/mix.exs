@@ -12,7 +12,8 @@ defmodule EtsService.MixProject do
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      deps: deps()
+      deps: deps(),
+      xref: [exclude: [Phoenix.PubSub]]
     ]
   end
 

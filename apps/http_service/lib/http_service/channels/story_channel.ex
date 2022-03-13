@@ -20,10 +20,28 @@ defmodule HttpService.StoryChannel do
   @impl true
   @spec join(<<_::40>>, map(), Phoenix.Socket.t()) :: {:ok, Phoenix.Socket.t()}
   def join("story", _payload, socket) do
+    :ok = EtsService.subscribe()
+
+    {:ok,
+     socket
+     |> assign(:stories, [])
+     |> put_new_stories()}
+  end
+
+  @impl true
+  def handle_info({_from, {event, value}}, socket) do
+    broadcast(socket, to_string(event), Map.from_struct(value))
+
+    {:noreply, socket}
+  end
+
+  defp put_new_stories(socket) do
     stories =
       EtsService.list_data()
       |> Enum.take(1)
 
-    {:ok, assign(socket, stories: stories)}
+    :ok = EtsService.subscribe()
+
+    assign(socket, :stories, stories)
   end
 end

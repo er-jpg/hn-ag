@@ -70,7 +70,15 @@ defmodule EtsService do
   """
   @spec insert_data(any) :: :ok | {:error, :invalid_data}
   def insert_data(%Story{id: key} = story) do
-    GenServer.cast(__MODULE__, {:insert, {key, story}})
+    case find_data(key) do
+      [] ->
+        GenServer.cast(__MODULE__, {:insert, {key, story}})
+        notify_subscribers({:inserted_value, story})
+        :ok
+
+      _ ->
+        :ok
+    end
   end
 
   def insert_data(_data), do: {:error, :invalid_data}
@@ -137,5 +145,16 @@ defmodule EtsService do
   @spec clear_data :: :ok
   def clear_data do
     GenServer.cast(__MODULE__, :clear)
+  end
+
+  @doc """
+  Uses Phoenix PubSub to subscribe and send events from the module.
+  """
+  def subscribe do
+    Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
+  end
+
+  defp notify_subscribers({key, value}) do
+    Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
   end
 end

@@ -18,12 +18,14 @@ Set up the `SECRET_KEY_BASE` env with
 export SECRET_KEY_BASE=$(elixir --eval 'IO.puts(:crypto.strong_rand_bytes(64) |> Base.encode64(padding: false))')
 ```
 
+### Docker
+
 When running the application from a container the following steps
  - build the image with `docker build -t hn .` from the root of the directory
  - run the image using `docker run -p 4000:4000 --net hn_ag_default -e SECRET_KEY_BASE=$SECRET_KEY_BASE hn start`
  - ping `localhost:4000/health` to check the app status
 
----
+### Manually
 
 Running the application via terminal use the following steps
 
@@ -65,10 +67,15 @@ The lint of code is done via [credo](https://github.com/rrrene/credo) and in the
 
   * ~~fix tests and implement mox to external api calls, currently when the worker starts the mox doesn't run and can't find the mock~~
   * implement `select_count/3` for pagination inside the ETS, but it still requires learning how to match
-  * figure out how to test the list stories endpoint
+  * figure out how to test the list stories endpoint and the websocket
+  * add first story when subscribe to websocket
 
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+---
+
+[Back to the top](#hacker-news-aggregator)
