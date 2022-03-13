@@ -35,7 +35,19 @@ Running the application via terminal use the following steps
 
 Currently the `http_server` has the following endpoints:
   - `[GET]/health` returns status 200
-  - `[GET]/api/stories&page=1` which returns a list of stories currently on memory 
+  - `[GET]/api/stories&page=1` which returns a list of stories currently on memory
+  - `[SUB]/websocket` websocket for getting notifications of new stories
+
+The `/websocket` upon entry requires the user to join a topic, you can use the following example: 
+
+```json
+{
+  "topic": "story",
+  "event": "phx_join",
+  "payload": {},
+  "ref": "story"
+}
+```
 
 ## Testing and code quality
 

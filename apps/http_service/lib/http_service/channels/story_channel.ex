@@ -6,7 +6,7 @@ defmodule HttpService.StoryChannel do
   @doc """
   Main function to handle a join from the external websocket request.
 
-  In order to join this channel you need to connect with the UserSocket via ws://localhost:4000/websocket and then send the following request:
+  In order to join this channel you need to connect with the UserSocket via `ws://localhost:4000/websocket` and then send the following request:
 
   ```json
   {
