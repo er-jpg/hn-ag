@@ -1,4 +1,7 @@
 defmodule HttpService.StoryChannel do
+  @moduledoc """
+  The channel for streaming information about the story data in the application.
+  """
   use HttpService, :channel
 
   alias EtsService

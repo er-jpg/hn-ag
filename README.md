@@ -69,6 +69,7 @@ The lint of code is done via [credo](https://github.com/rrrene/credo) and in the
   * implement `select_count/3` for pagination inside the ETS, but it still requires learning how to match
   * figure out how to test the list stories endpoint and the websocket
   * add first story when subscribe to websocket
+  * fix worker and ets_service tests because the PubSub doesn't start with the ETS OTP app
 
 
 ## Contributing
