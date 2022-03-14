@@ -54,11 +54,7 @@ defmodule HnService.WorkerTest do
   end
 
   describe "do_task_now!/0" do
-    test "gets and adds data correctly to ETS from Hacker News API", %{
-      story_api: story_api,
-      story: story,
-      id: id
-    } do
+    test "gets and adds data correctly to ETS from Hacker News API", %{story: story, id: id} do
       HnService.Worker.do_task_now!()
 
       task = Task.async(fn -> HnService.Worker.do_task_now!() end)

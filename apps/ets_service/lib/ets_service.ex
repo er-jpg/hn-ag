@@ -151,10 +151,18 @@ defmodule EtsService do
   Uses Phoenix PubSub to subscribe and send events from the module.
   """
   def subscribe do
-    Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
+    if Mix.env() == :test do
+      :ok
+    else
+      Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
+    end
   end
 
   defp notify_subscribers({key, value}) do
-    Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
+    if Mix.env() == :test do
+      :ok
+    else
+      Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
+    end
   end
 end
