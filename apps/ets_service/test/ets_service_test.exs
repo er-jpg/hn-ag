@@ -65,7 +65,7 @@ defmodule EtsServiceTest do
       assert Enum.member?(EtsService.list_data(), story)
     end
 
-    test "returns an empty list if there's no itens in the ets", %{table_name: table_name} do
+    test "returns an empty list if there's no itens in the ets" do
       assert :ok = EtsService.clear_data()
       assert EtsService.list_data() == []
     end

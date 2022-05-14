@@ -4,6 +4,8 @@ defmodule EtsService do
 
   It uses the GenServer behaviour as it's required for the data storage to be up at all times when
   the application is running.
+
+  # TODO: Remove Mix.env()
   """
   use GenServer
 
@@ -151,18 +153,18 @@ defmodule EtsService do
   Uses Phoenix PubSub to subscribe and send events from the module.
   """
   def subscribe do
-    if Mix.env() == :test do
-      :ok
-    else
+    unless Mix.env() == :test do
       Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
+    else
+      :ok
     end
   end
 
   defp notify_subscribers({key, value}) do
-    if Mix.env() == :test do
-      :ok
-    else
+    unless Mix.env() == :test do
       Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
+    else
+      :ok
     end
   end
 end

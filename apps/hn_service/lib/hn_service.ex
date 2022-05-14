@@ -20,7 +20,7 @@ defmodule HnService do
   @spec fetch_story_data(integer()) :: {:error, any()} | {:ok, [EtsService.Schemas.Story.t()]}
   def fetch_story_data(pool \\ @pool_amount) do
     with {:ok, story_list} <- hacker_news_api().get_top_stories(),
-         top_pool_stories <- Stream.take(story_list, pool),
+         top_pool_stories <- Enum.take(story_list, pool),
          {:ok, detailed_list} <- aggregate_stories_details(top_pool_stories) do
       map_detailed_list(detailed_list)
     end
@@ -49,7 +49,8 @@ defmodule HnService do
     {:ok,
      list
      |> Stream.map(fn e ->
-       atom_map = Map.new(e, fn {k, v} -> {String.to_atom(k), v} end)
+       # Change to not use atom
+       atom_map = Map.new(e, fn {k, v} -> {String.to_existing_atom(k), v} end)
 
        %Story{
          by: Map.get(atom_map, :by),

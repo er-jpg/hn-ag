@@ -21,7 +21,7 @@ defmodule HttpService.StoryChannel do
   ```
   """
   @impl true
-  @spec join(<<_::40>>, map(), Phoenix.Socket.t()) :: {:ok, Phoenix.Socket.t()}
+  @spec join(bitstring(), map(), Phoenix.Socket.t()) :: {:ok, Phoenix.Socket.t()}
   def join("story", _payload, socket) do
     :ok = EtsService.subscribe()
 

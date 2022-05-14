@@ -3,6 +3,8 @@ defmodule HnService.Worker do
   A worker process responsible for the workload of saving the Hacker News Api data into the Ets Service.
 
   The default timer for the application can be correctly set on the `application.ex` as an option, resulting in {HnService.Worker, minutes: 5}. If the value isn't set it defaults to `@default_time_range`.
+
+  # TODO: Take a look at _handle_continue_ callback.
   """
   use GenServer
 
@@ -30,9 +32,7 @@ defmodule HnService.Worker do
   end
 
   def handle_info({:save_data, {:ok, stories}}, state) do
-    stories
-    |> Stream.map(fn e -> EtsService.insert_data(e) end)
-    |> Stream.run()
+    Enum.each(stories, fn e -> EtsService.insert_data(e) end)
 
     Logger.info("Upserted #{Enum.count(stories)} rows into the Ets.")
 
