@@ -1,9 +1,9 @@
-defmodule EtsService.MixProject do
+defmodule DataService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ets_service,
+      app: :data_service,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",

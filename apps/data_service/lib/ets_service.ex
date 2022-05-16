@@ -1,4 +1,4 @@
-defmodule EtsService do
+defmodule DataService do
   @moduledoc """
   Provides the functions to store, access and delete data in the ETS memory under the _stories_ table.
 
@@ -9,7 +9,7 @@ defmodule EtsService do
   """
   use GenServer
 
-  alias EtsService.Schemas.Story
+  alias DataService.Schemas.Story
 
   @table :stories
 
@@ -66,7 +66,7 @@ defmodule EtsService do
 
   ## Examples
 
-      iex> EtsService.insert_data(%EtsService.Schemas.Story{id: 1, title: "Foo bar"})
+      iex> DataService.insert_data(%DataService.Schemas.Story{id: 1, title: "Foo bar"})
       :ok
 
   """
@@ -88,12 +88,12 @@ defmodule EtsService do
   @doc """
   Searches data from the stories table in the ETS using the `key`.
 
-  Returns `[%EtsService.Schemas.Story{}]`.
+  Returns `[%DataService.Schemas.Story{}]`.
 
   ## Examples
 
-      iex> EtsService.find_data(1))
-      [%EtsService.Schemas.Story{id: 1, title: "Foo bar", ...}]
+      iex> DataService.find_data(1))
+      [%DataService.Schemas.Story{id: 1, title: "Foo bar", ...}]
 
   """
   @spec find_data(any) :: list()
@@ -108,7 +108,7 @@ defmodule EtsService do
 
   ## Examples
 
-      iex> EtsService.delete_data(1))
+      iex> DataService.delete_data(1))
       :ok
 
   """
@@ -120,12 +120,12 @@ defmodule EtsService do
   @doc """
   Lists all data from the stories table in the ETS.
 
-  Returns `[%EtsService.Schemas.Story{}]`.
+  Returns `[%DataService.Schemas.Story{}]`.
 
   ## Examples
 
-      iex> EtsService.list())
-      [%EtsService.Schemas.Story{id: 1, title: "Foo bar", ...}]
+      iex> DataService.list())
+      [%DataService.Schemas.Story{id: 1, title: "Foo bar", ...}]
 
   """
   @spec list_data :: list()
@@ -140,7 +140,7 @@ defmodule EtsService do
 
   ## Examples
 
-      iex> EtsService.clear())
+      iex> DataService.clear())
       :ok
 
   """
@@ -155,16 +155,12 @@ defmodule EtsService do
   def subscribe do
     unless Mix.env() == :test do
       Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
-    else
-      :ok
     end
   end
 
   defp notify_subscribers({key, value}) do
     unless Mix.env() == :test do
       Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
-    else
-      :ok
     end
   end
 end

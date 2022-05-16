@@ -1,11 +1,11 @@
-defmodule EtsServiceTest do
+defmodule DataServiceTest do
   use ExUnit.Case, async: true
 
-  alias EtsService.Schemas.Story
+  alias DataService.Schemas.Story
 
   setup do
-    if is_nil(Process.whereis(EtsService)) do
-      start_supervised!(EtsService)
+    if is_nil(Process.whereis(DataService)) do
+      start_supervised!(DataService)
     end
 
     story = %Story{
@@ -28,55 +28,55 @@ defmodule EtsServiceTest do
     test "inserts valid data into ETS", %{story: story} do
       new_story = %{story | id: 2}
 
-      assert EtsService.insert_data(%{story | id: 2}) == :ok
-      assert Enum.member?(EtsService.find_data(2), new_story)
+      assert DataService.insert_data(%{story | id: 2}) == :ok
+      assert Enum.member?(DataService.find_data(2), new_story)
     end
 
     test "returns an error on invalid data" do
-      assert EtsService.insert_data(:invalid) == {:error, :invalid_data}
+      assert DataService.insert_data(:invalid) == {:error, :invalid_data}
     end
   end
 
   describe "find_data/1" do
     test "returns list of stories in the database", %{story: story} do
-      assert EtsService.insert_data(story) == :ok
-      assert Enum.member?(EtsService.find_data(story.id), story)
+      assert DataService.insert_data(story) == :ok
+      assert Enum.member?(DataService.find_data(story.id), story)
     end
 
     test "returns an empty list if there's no itens with the given key" do
-      assert EtsService.find_data(:invalid) == []
+      assert DataService.find_data(:invalid) == []
     end
   end
 
   describe "delete_data/1" do
     setup %{story: story} do
-      EtsService.insert_data(story)
+      DataService.insert_data(story)
     end
 
     test "deletes given element from ets", %{story: story} do
-      assert EtsService.delete_data(story.id) == :ok
-      refute Enum.member?(EtsService.find_data(story.id), story)
+      assert DataService.delete_data(story.id) == :ok
+      refute Enum.member?(DataService.find_data(story.id), story)
     end
   end
 
   describe "list_data/0" do
     test "returns full list of stories in the database", %{story: story} do
-      assert EtsService.insert_data(story) == :ok
-      assert Enum.member?(EtsService.list_data(), story)
+      assert DataService.insert_data(story) == :ok
+      assert Enum.member?(DataService.list_data(), story)
     end
 
     test "returns an empty list if there's no itens in the ets" do
-      assert :ok = EtsService.clear_data()
-      assert EtsService.list_data() == []
+      assert :ok = DataService.clear_data()
+      assert DataService.list_data() == []
     end
   end
 
   describe "clear_data/0" do
     test "fully cleans a table from the ets", %{story: story} do
-      assert EtsService.insert_data(story) == :ok
-      assert Enum.member?(EtsService.list_data(), story)
-      assert :ok = EtsService.clear_data()
-      assert EtsService.list_data() == []
+      assert DataService.insert_data(story) == :ok
+      assert Enum.member?(DataService.list_data(), story)
+      assert :ok = DataService.clear_data()
+      assert DataService.list_data() == []
     end
   end
 end

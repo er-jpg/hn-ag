@@ -15,7 +15,7 @@ ENV MIX_ENV="prod"
 
 COPY mix.exs mix.lock ./
 COPY apps/http_service/mix.exs ./apps/http_service/mix.exs
-COPY apps/ets_service/mix.exs ./apps/ets_service/mix.exs
+COPY apps/data_service/mix.exs ./apps/data_service/mix.exs
 
 RUN mix deps.get --only $MIX_ENV
 RUN mkdir config

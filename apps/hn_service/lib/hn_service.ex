@@ -4,7 +4,7 @@ defmodule HnService do
   """
   @pool_amount 50
 
-  alias EtsService.Schemas.Story
+  alias DataService.Schemas.Story
   alias HnService.HackerNewsApi
 
   @doc """
@@ -15,9 +15,9 @@ defmodule HnService do
     1. Gets the list of top_stories from the external service
     2. Takes the top `pool` of stories in order parse
     3. From the id in the list, it gets the details of a given story
-    4. Maps each result into the `%EtsService.Schemas.Story{}` struct
+    4. Maps each result into the `%DataService.Schemas.Story{}` struct
   """
-  @spec fetch_story_data(integer()) :: {:error, any()} | {:ok, [EtsService.Schemas.Story.t()]}
+  @spec fetch_story_data(integer()) :: {:error, any()} | {:ok, [DataService.Schemas.Story.t()]}
   def fetch_story_data(pool \\ @pool_amount) do
     with {:ok, story_list} <- hacker_news_api().get_top_stories(),
          top_pool_stories <- Enum.take(story_list, pool),

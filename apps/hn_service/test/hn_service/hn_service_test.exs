@@ -3,7 +3,7 @@ defmodule HnServiceTest do
 
   import Mox
 
-  alias EtsService.Schemas.Story
+  alias DataService.Schemas.Story
 
   setup [:verify_on_exit!]
 

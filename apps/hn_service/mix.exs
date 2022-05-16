@@ -28,7 +28,7 @@ defmodule HnService.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ets_service, in_umbrella: true},
+      {:data_service, in_umbrella: true},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
       {:jason, "~> 1.2"},

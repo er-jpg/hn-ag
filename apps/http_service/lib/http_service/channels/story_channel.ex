@@ -4,7 +4,7 @@ defmodule HttpService.StoryChannel do
   """
   use HttpService, :channel
 
-  alias EtsService
+  alias DataService
 
   @doc """
   Main function to handle a join from the external websocket request.
@@ -23,7 +23,7 @@ defmodule HttpService.StoryChannel do
   @impl true
   @spec join(bitstring(), map(), Phoenix.Socket.t()) :: {:ok, Phoenix.Socket.t()}
   def join("story", _payload, socket) do
-    :ok = EtsService.subscribe()
+    :ok = DataService.subscribe()
 
     {:ok,
      socket
@@ -40,10 +40,10 @@ defmodule HttpService.StoryChannel do
 
   defp put_new_stories(socket) do
     stories =
-      EtsService.list_data()
+      DataService.list_data()
       |> Enum.take(1)
 
-    :ok = EtsService.subscribe()
+    :ok = DataService.subscribe()
 
     assign(socket, :stories, stories)
   end

@@ -1,4 +1,4 @@
-defmodule EtsService.Schemas.Story do
+defmodule DataService.Schemas.Story do
   @moduledoc """
   Defines the struct to the data to be inserted on the ETS ubder the :stories table.
 

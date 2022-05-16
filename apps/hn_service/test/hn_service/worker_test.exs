@@ -3,7 +3,7 @@ defmodule HnService.WorkerTest do
 
   import Mox
 
-  alias EtsService.Schemas.Story
+  alias DataService.Schemas.Story
 
   setup [:set_mox_global, :verify_on_exit!]
 
@@ -42,8 +42,8 @@ defmodule HnService.WorkerTest do
       {:ok, story_api}
     end)
 
-    if is_nil(Process.whereis(EtsService)) do
-      start_supervised!(EtsService)
+    if is_nil(Process.whereis(DataService)) do
+      start_supervised!(DataService)
     end
 
     if is_nil(Process.whereis(HnService.Worker)) do
@@ -61,7 +61,7 @@ defmodule HnService.WorkerTest do
       ref = Process.monitor(task.pid)
 
       assert_receive {:DOWN, ^ref, :process, _, :normal}, 500
-      assert Enum.member?(EtsService.find_data(id), story)
+      assert Enum.member?(DataService.find_data(id), story)
     end
   end
 end

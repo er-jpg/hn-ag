@@ -38,7 +38,7 @@ defmodule HttpService.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:ets_service, in_umbrella: true},
+      {:data_service, in_umbrella: true},
       {:phoenix, "~> 1.6.2"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},

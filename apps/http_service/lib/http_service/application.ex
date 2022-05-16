@@ -9,7 +9,7 @@ defmodule HttpService.Application do
       {Phoenix.PubSub, name: HttpService.PubSub},
       HttpService.Telemetry,
       HttpService.Endpoint,
-      EtsService,
+      DataService,
       {HnService.Worker, minutes: 5}
     ]
 

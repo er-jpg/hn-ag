@@ -32,7 +32,7 @@ defmodule HnService.Worker do
   end
 
   def handle_info({:save_data, {:ok, stories}}, state) do
-    Enum.each(stories, fn e -> EtsService.insert_data(e) end)
+    Enum.each(stories, fn e -> DataService.insert_data(e) end)
 
     Logger.info("Upserted #{Enum.count(stories)} rows into the Ets.")
 
