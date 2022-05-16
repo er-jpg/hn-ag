@@ -12,6 +12,15 @@ import Config
 config :http_service,
   generators: [context_app: false]
 
+config :data_service, ecto_repos: [DataService.Repo]
+
+config :data_service, DataService.Repo,
+  database: "data_service_dev",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  port: "5432"
+
 # Configures the endpoint
 config :http_service, HttpService.Endpoint,
   url: [host: "localhost"],

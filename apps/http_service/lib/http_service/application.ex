@@ -10,6 +10,7 @@ defmodule HttpService.Application do
       HttpService.Telemetry,
       HttpService.Endpoint,
       DataService,
+      DataService.Repo,
       {HnService.Worker, minutes: 5}
     ]
 
