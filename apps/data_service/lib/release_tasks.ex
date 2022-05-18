@@ -11,7 +11,7 @@ defmodule DataService.ReleaseTasks do
     :ecto_sql
   ]
 
-  @repos Application.get_env(:data_service, :ecto_repos, [])
+  @repos Application.compile_env(:data_service, :ecto_repos, [])
 
   def migrate do
     start_services()

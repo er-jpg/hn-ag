@@ -14,7 +14,7 @@ COPY apps/data_service/mix.exs /app/apps/data_service/
 COPY apps/hn_service/mix.exs /app/apps/hn_service/
 
 ENV MIX_ENV=prod
-RUN mix do deps.get --only $MIX_ENV
+RUN mix do deps.get --only $MIX_ENV, deps.compile
 
 COPY . /app/
 
@@ -30,10 +30,7 @@ RUN MIX_ENV=prod mix release --overwrite
 
 ########################################################################
 
-FROM elixir:1.13
-
-ARG SECRET_KEY_BASE=2b+gF7MYo277lp15rCuSKFPr3F9b+L6OwU4wbL4+7WrD7glTJJtZgUqqgTvqNlqX
-ARG DATABASE_URL=postgres@localhost:5433/hn_ag_dev
+FROM elixir:1.13-slim
 
 EXPOSE 4000
 ENV PORT=4000 \

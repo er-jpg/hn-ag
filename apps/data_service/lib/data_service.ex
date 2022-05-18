@@ -13,6 +13,7 @@ defmodule DataService do
   alias DataService.Schemas.Story
 
   @table :stories
+  @mix_env Mix.env()
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -160,13 +161,13 @@ defmodule DataService do
   Uses Phoenix PubSub to subscribe and send events from the module.
   """
   def subscribe do
-    unless Mix.env() == :test do
+    unless @mix_env == :test do
       Phoenix.PubSub.subscribe(HttpService.PubSub, to_string(@table))
     end
   end
 
   defp notify_subscribers({key, value}) do
-    unless Mix.env() == :test do
+    unless @mix_env == :test do
       Phoenix.PubSub.broadcast(HttpService.PubSub, to_string(@table), {__MODULE__, {key, value}})
     end
   end

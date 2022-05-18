@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  elixir:
+    build: .
+    depends_on:
+      - db
+    env_file: ".env"
+    ports:
+      - "4000:4000"
+    
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=data_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+       - "5433:5432"

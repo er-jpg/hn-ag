@@ -18,12 +18,17 @@ Set up the `SECRET_KEY_BASE` env with
 export SECRET_KEY_BASE=$(elixir --eval 'IO.puts(:crypto.strong_rand_bytes(64) |> Base.encode64(padding: false))')
 ```
 
-### Docker
+Export the `DATABASE_URL` with
+
+```bash
+export DATABASE_URL=ecto://postgres:postgres@db:5432/data_service
+```
+
+### Docker compose
 
 When running the application from a container the following steps
- - build the image with `docker build -t hn_ag .` from the root of the directory
- - run the image using `docker run -d --env-file .env hn_ag:latest`
- - ping `localhost:4000/health` to check the app status
+ - create a new `.env` using the [.env.example](./.env.example)
+ - build and run the image using docker-compose `docker-compose up --build`
 
 ### Manually
 
@@ -59,6 +64,11 @@ webSocket.onmessage = function(e) { console.log(e) }
 webSocket.send(`{"topic": "story","event": "phx_join","payload": {},"ref": "story"}`)
 ```
 
+And to clear the data inside the docker-compose
+  1. `docker-compose exec elixir bin/hn_ag remote`
+  2. `DataService.clear_data()`
+  3. `HnService.Worker.do_task_now!()`
+
 ## Testing and code quality
 
 ### Testing
@@ -78,6 +88,7 @@ The lint of code is done via [credo](https://github.com/rrrene/credo) and in the
   * figure out how to test the list stories endpoint and the websocket
   * add first story when subscribe to websocket
   * ~~fix worker and data_service tests because the PubSub doesn't start with the ETS OTP app~~
+  * fix issue with docker database not creating default database on first startup
 
 
 ## Contributing
