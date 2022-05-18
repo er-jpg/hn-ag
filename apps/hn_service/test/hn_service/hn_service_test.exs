@@ -29,8 +29,8 @@ defmodule HnServiceTest do
       |> expect(:get_top_stories, fn -> {:ok, [1]} end)
       |> expect(:get_story_details, 2, fn _id -> {:ok, story} end)
 
-      assert {:ok, result} = HnService.fetch_story_data()
-      assert Enum.any?(result, fn e -> match?(%Story{id: 1}, e) end)
+      assert {:ok, _changeset, maps} = HnService.fetch_story_data()
+      assert Enum.any?(maps, fn e -> match?(%Story{ref: 1}, e) end)
     end
 
     test "returns an error when the get_top_stories fails and doesn't call the details" do

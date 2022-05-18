@@ -14,7 +14,7 @@ defmodule HnService.WorkerTest do
       "by" => "John Dee",
       "descendants" => 10,
       "id" => id,
-      "kids" => 0,
+      "kids" => [1, 2, 3, 50],
       "score" => 12,
       "time" => DateTime.to_unix(DateTime.utc_now()),
       "title" => "Foo bar",
@@ -26,7 +26,7 @@ defmodule HnService.WorkerTest do
       by: "John Dee",
       descendants: 10,
       id: id,
-      kids: 0,
+      kids: [1, 2, 3, 50],
       score: 12,
       time: DateTime.to_unix(DateTime.utc_now()),
       title: "Foo bar",
@@ -61,7 +61,9 @@ defmodule HnService.WorkerTest do
       ref = Process.monitor(task.pid)
 
       assert_receive {:DOWN, ^ref, :process, _, :normal}, 500
-      assert Enum.member?(DataService.find_data(id), story)
+
+      story_list = DataService.find_data(id)
+      assert %Story{} = Enum.find(story_list, fn s -> s.ref == story.id end)
     end
   end
 end

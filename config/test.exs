@@ -16,3 +16,5 @@ config :http_service, HttpService.Endpoint,
 
 # Configures test caller for Hacker News External API
 config :hn_service, hn_api: HnService.HackerNewsApiBehaviourMock
+
+config :data_service, DataService.Repo, pool: Ecto.Adapters.SQL.Sandbox

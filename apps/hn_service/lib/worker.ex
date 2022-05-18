@@ -26,15 +26,23 @@ defmodule HnService.Worker do
     |> schedule_work()
 
     result = HnService.fetch_story_data()
+
     send(self(), {:save_data, result})
+    send(self(), {:store_data, result})
 
     {:noreply, state}
   end
 
-  def handle_info({:save_data, {:ok, stories}}, state) do
-    Enum.each(stories, fn e -> DataService.insert_data(e) end)
+  def handle_info({:store_data, {:ok, changesets, _maps}}, state) do
+    DataService.store_data(changesets)
 
-    Logger.info("Upserted #{Enum.count(stories)} rows into the Ets.")
+    {:noreply, state}
+  end
+
+  def handle_info({:save_data, {:ok, _changesets, maps}}, state) do
+    Enum.each(maps, fn e -> DataService.cache_data(e) end)
+
+    Logger.info("Upserted #{Enum.count(maps)} rows into the Ets.")
 
     {:noreply, state}
   end

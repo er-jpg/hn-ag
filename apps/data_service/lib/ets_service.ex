@@ -9,6 +9,7 @@ defmodule DataService do
   """
   use GenServer
 
+  alias DataService.Repo
   alias DataService.Schemas.Story
 
   @table :stories
@@ -66,12 +67,12 @@ defmodule DataService do
 
   ## Examples
 
-      iex> DataService.insert_data(%DataService.Schemas.Story{id: 1, title: "Foo bar"})
+      iex> DataService.cache_data(%DataService.Schemas.Story{id: 1, title: "Foo bar"})
       :ok
 
   """
-  @spec insert_data(any) :: :ok | {:error, :invalid_data}
-  def insert_data(%Story{id: key} = story) do
+  @spec cache_data(any) :: :ok | {:error, :invalid_data}
+  def cache_data(%Story{ref: key} = story) do
     case find_data(key) do
       [] ->
         GenServer.cast(__MODULE__, {:insert, {key, story}})
@@ -83,7 +84,11 @@ defmodule DataService do
     end
   end
 
-  def insert_data(_data), do: {:error, :invalid_data}
+  def cache_data(_data), do: {:error, :invalid_data}
+
+  def store_data(story_list) do
+    Enum.each(story_list, &Repo.insert_or_update(&1))
+  end
 
   @doc """
   Searches data from the stories table in the ETS using the `key`.

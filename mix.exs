@@ -9,6 +9,7 @@ defmodule HnAg.MixProject do
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       releases: releases(),
+      aliases: aliases(),
       xref: [exclude: [Phoenix.PubSub]]
     ]
   end
@@ -29,6 +30,13 @@ defmodule HnAg.MixProject do
           http_service: :permanent
         ]
       ]
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test --no-start"],
+      "ecto.reset": ["ecto.drop", "ecto.create", "ecto.migrate"]
     ]
   end
 end

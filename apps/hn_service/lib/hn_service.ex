@@ -46,24 +46,18 @@ defmodule HnService do
   end
 
   defp map_detailed_list(list) do
-    {:ok,
-     list
-     |> Stream.map(fn e ->
-       # Change to not use atom
-       atom_map = Map.new(e, fn {k, v} -> {String.to_existing_atom(k), v} end)
+    changesets =
+      list
+      |> Enum.map(fn e ->
+        e
+        |> Map.put("ref", Map.get(e, "id"))
+        |> Map.put("time", NaiveDateTime.from_gregorian_seconds(Map.get(e, "id")))
+        |> Story.changeset()
+      end)
 
-       %Story{
-         by: Map.get(atom_map, :by),
-         descendants: Map.get(atom_map, :descendants),
-         id: atom_map.id,
-         kids: Map.get(atom_map, :kids),
-         score: Map.get(atom_map, :score),
-         time: Map.get(atom_map, :time),
-         title: Map.get(atom_map, :title),
-         type: Map.get(atom_map, :type),
-         url: Map.get(atom_map, :url)
-       }
-     end)}
+    maps = Enum.map(changesets, &Story.apply(&1))
+
+    {:ok, changesets, maps}
   end
 
   defp hacker_news_api() do
