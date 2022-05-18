@@ -27,7 +27,8 @@ defmodule HnAg.MixProject do
         include_executables_for: [:unix],
         applications: [
           data_service: :permanent,
-          http_service: :permanent
+          http_service: :permanent,
+          hn_service: :permanent
         ]
       ]
     ]

@@ -73,6 +73,8 @@ defmodule DataService do
   """
   @spec cache_data(any) :: :ok | {:error, :invalid_data}
   def cache_data(%Story{ref: key} = story) do
+    story = Map.drop(story, [:__meta__])
+
     case find_data(key) do
       [] ->
         GenServer.cast(__MODULE__, {:insert, {key, story}})

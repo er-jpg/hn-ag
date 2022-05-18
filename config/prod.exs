@@ -93,3 +93,7 @@ config :http_service, HttpService.Endpoint,
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+config :data_service, DataService.Repo,
+  url: System.get_env("DATABASE_URL"),
+  pool_size: 5

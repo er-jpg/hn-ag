@@ -21,8 +21,8 @@ export SECRET_KEY_BASE=$(elixir --eval 'IO.puts(:crypto.strong_rand_bytes(64) |>
 ### Docker
 
 When running the application from a container the following steps
- - build the image with `docker build -t hn .` from the root of the directory
- - run the image using `docker run -p 4000:4000 --net hn_ag_default -e SECRET_KEY_BASE=$SECRET_KEY_BASE hn start`
+ - build the image with `docker build -t hn_ag .` from the root of the directory
+ - run the image using `docker run -d --env-file .env hn_ag:latest`
  - ping `localhost:4000/health` to check the app status
 
 ### Manually
@@ -49,6 +49,14 @@ The `/websocket` upon entry requires the user to join a topic, you can use the f
   "payload": {},
   "ref": "story"
 }
+```
+
+One recomendation for testing websocket using javascript is the following:
+
+```javascript
+let webSocket = new WebSocket('ws://localhost:4000/websocket')
+webSocket.onmessage = function(e) { console.log(e) }
+webSocket.send(`{"topic": "story","event": "phx_join","payload": {},"ref": "story"}`)
 ```
 
 ## Testing and code quality

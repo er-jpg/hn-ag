@@ -82,3 +82,10 @@ config :http_service, HttpService.Endpoint,
 # If desired, both `http:` and `https:` keys can be
 # configured to run both http and https servers on
 # different ports.
+
+config :data_service, DataService.Repo,
+  database: "data_service_dev",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  port: "5432"
