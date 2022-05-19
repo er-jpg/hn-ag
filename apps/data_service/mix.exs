@@ -13,7 +13,8 @@ defmodule DataService.MixProject do
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       deps: deps(),
-      xref: [exclude: [Phoenix.PubSub]]
+      xref: [exclude: [Phoenix.PubSub]],
+      aliases: aliases()
     ]
   end
 
@@ -29,7 +30,17 @@ defmodule DataService.MixProject do
     [
       {:ecto, "~> 3.7"},
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:jason, "~> 1.3"}
+    ]
+  end
+
+  defp aliases do
+    [
+      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.drop", "ecto.setup", "test"]
     ]
   end
 end

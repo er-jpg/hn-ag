@@ -54,7 +54,10 @@ defmodule HnService.WorkerTest do
   end
 
   describe "do_task_now!/0" do
-    test "gets and adds data correctly to ETS from Hacker News API", %{story: story, id: id} do
+    test "gets and adds data correctly to ETS from Hacker News API", %{
+      story: %{id: story_ref} = story,
+      id: id
+    } do
       HnService.Worker.do_task_now!()
 
       task = Task.async(fn -> HnService.Worker.do_task_now!() end)
@@ -63,7 +66,7 @@ defmodule HnService.WorkerTest do
       assert_receive {:DOWN, ^ref, :process, _, :normal}, 500
 
       story_list = DataService.find_data(id)
-      assert %Story{} = Enum.find(story_list, fn s -> s.ref == story.id end)
+      assert %{ref: ^story_ref} = Enum.find(story_list, fn s -> s.ref == story.id end)
     end
   end
 end

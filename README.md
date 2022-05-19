@@ -4,7 +4,7 @@ This is yet another [Hacker News](https://news.ycombinator.com/) aggregator. But
 
 You can reference the following diagram in order to understand how the application is built along with a brief explanation of each OTP app in it.
 
-![App diagram](app_diagram.png)
+![App diagram](app_diagram.jpg)
 
 ## Installation
 
@@ -89,7 +89,6 @@ The lint of code is done via [credo](https://github.com/rrrene/credo) and in the
   * add first story when subscribe to websocket
   * ~~fix worker and data_service tests because the PubSub doesn't start with the ETS OTP app~~
   * fix issue with docker database not creating default database on first startup
-
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

@@ -54,7 +54,7 @@ defmodule DataService do
   def handle_call(:list, _from, name) do
     result =
       case :ets.tab2list(name) do
-        [] -> []
+        [] -> Repo.all(Story)
         list when is_list(list) -> Enum.map(list, fn {_key, value} -> value end)
       end
 
@@ -74,7 +74,7 @@ defmodule DataService do
   """
   @spec cache_data(any) :: :ok | {:error, :invalid_data}
   def cache_data(%Story{ref: key} = story) do
-    story = Map.drop(story, [:__meta__])
+    story = Map.drop(story, [:__meta__, :__struct__])
 
     case find_data(key) do
       [] ->
@@ -89,6 +89,12 @@ defmodule DataService do
 
   def cache_data(_data), do: {:error, :invalid_data}
 
+  @doc """
+  Stores data inside the repo of the application.
+
+  It should receive a list of changesets to be upsert on the database.
+  """
+  @spec store_data(list()) :: :ok
   def store_data(story_list) do
     Enum.each(story_list, &Repo.insert_or_update(&1))
   end

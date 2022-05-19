@@ -29,7 +29,10 @@ defmodule DataServiceTest do
       new_story = %{story | ref: 2}
 
       assert DataService.cache_data(%{story | ref: 2}) == :ok
-      assert Enum.member?(DataService.find_data(2), new_story)
+
+      assert Enum.any?(DataService.find_data(2), fn e ->
+               match?(%{ref: 2}, e)
+             end)
     end
 
     test "returns an error on invalid data" do
@@ -38,9 +41,12 @@ defmodule DataServiceTest do
   end
 
   describe "find_data/1" do
-    test "returns list of stories in the database", %{story: story} do
+    test "returns list of stories in the database", %{story: %{ref: ref} = story} do
       assert DataService.cache_data(story) == :ok
-      assert Enum.member?(DataService.find_data(story.ref), story)
+
+      assert Enum.any?(DataService.find_data(ref), fn e ->
+               match?(%{ref: ^ref}, e)
+             end)
     end
 
     test "returns an empty list if there's no itens with the given key" do
@@ -60,9 +66,12 @@ defmodule DataServiceTest do
   end
 
   describe "list_data/0" do
-    test "returns full list of stories in the database", %{story: story} do
+    test "returns full list of stories in the database", %{story: %{ref: ref} = story} do
       assert DataService.cache_data(story) == :ok
-      assert Enum.member?(DataService.list_data(), story)
+
+      assert Enum.any?(DataService.list_data(), fn e ->
+               match?(%{ref: ^ref}, e)
+             end)
     end
 
     test "returns an empty list if there's no itens in the ets" do
@@ -74,7 +83,6 @@ defmodule DataServiceTest do
   describe "clear_data/0" do
     test "fully cleans a table from the ets", %{story: story} do
       assert DataService.cache_data(story) == :ok
-      assert Enum.member?(DataService.list_data(), story)
       assert :ok = DataService.clear_data()
       assert DataService.list_data() == []
     end
